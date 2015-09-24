@@ -1,0 +1,46 @@
+{% capture all_the_tags %}{% for tag in article.tags %}{{ tag }} {% endfor %}{% endcapture %}
+{{ all_the_tags }}
+{{ tag }}
+{% assign current = article.id %}
+{{ current }}
+{% assign count = 0 %}
+<script>
+	function fisherYates ( myArray ) {
+		var i = myArray.length,j,temp;
+		if (i == 0) return false;
+		while (--i) {
+			j = Math.floor(Math.random()*(i+1));
+			temp = myArray[i];
+			myArray[i] = myArray[j]; 
+			myArray[j] = temp;
+		}
+	}
+
+	var articles = new Array();
+	{% for article in blog.articles %}
+		{% unless article.id == current %}
+			{% for tag in article.tags %}
+				{% if all_the_tags contains tag %}
+					{% if article.content contains 'src' %}
+						{% assign article_img = article.content | split:'src="' %}
+						{% assign article_img = article_img[1] | split:'"' %}
+						{% assign article_img = article_img[0] %}
+  					{%assign src = article_img %}						
+					{% else %}                       
+            {%assign src = 'logo.png' | asset_url %}                        
+					{% endif %}
+					articles[{{ count }}] = "<a href='{{ article.url }}'><img src='{{ src }}' alt='{{ shop.name | escape }} {{ article.title | escape }}' /><br />{{ article.title | escape }}</a>";
+					{% assign count = count | plus:1 %}
+				{% endif %}
+			{% endfor %}
+		{% endunless %}
+	{% endfor %}
+		console.log(articles);
+	fisherYates(articles);
+	for(var i=0;i<4;i++) {
+		document.write(articles[i]);	
+	}
+	
+</script>
+
+{{ article.id }}
